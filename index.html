@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <title>Quiz Application</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap');
+
+    .firstpage {
+        background-color: rgb(255, 255, 255);
+        background-size: cover;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 200vh;
+        border-style: outset;
+    }
+
+    .firstpage video {
+        max-width: 100%;
+        height: auto;
+        margin-right: 20px;
+        margin-left: 40px;
+    }
+
+    .firstpage .content {
+      margin-top: 100px;
+      text-align: center;
+      max-width: 400px;
+      margin-left: 20px;
+      margin-right: 20px;
+    }
+
+    .content h1,
+    .content p,
+    .content button {
+        margin-top: 20px; /* Set the desired space between the video and text */
+    }
+
+    .start-btn {
+      padding: 10px;
+      font-size: 18px;
+      background-color: #4caf50;
+      color: #fff;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      }
+    
+    body {
+        margin: 0;
+        background: linear-gradient(to bottom, rgb(192, 190, 190),rgb(118, 118, 118));
+        font-family: 'Poppins', sans-serif;
+        background-repeat: no-repeat;
+        height: 100vh;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        padding-top: 20px;
+        padding-bottom: 20px;
+       
+    }
+    
+    #hr1 {
+      margin-bottom: 30px;
+    }
+
+    #hr2 {
+      margin-top: 30px;
+    }
+
+    #quiz-container {
+      display: none; 
+      width: 500px;
+      height: 900vh;
+      padding: 20px;
+      border: 5px double #ffffff;
+      border-radius: 20px;
+      background-color: #31312ef3;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      
+    }
+
+    .question {
+      font-size: 20px;
+      font-weight: bold;
+      font-family: 'Poppins', sans-serif;
+      letter-spacing: 2px;
+      margin-bottom: 10px;
+      text-align: center; 
+      display: flex;
+      justify-content: center; 
+      align-items: center;
+      color: #fff;
+      padding-top: 10px;
+      padding-left: 10px;
+      padding-right: 10px;
+    }
+
+    .options {
+      color: #fff;
+      width: 100% ;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      padding-left: 10px;
+      padding-right: 10px;
+    }
+
+    .options button {
+      margin: 10px 0;
+      padding: 10px 15px;
+      width: calc(100% - 70px);
+      font-size: 20px;
+      background-color: #292929;
+      color: #ffffff;
+      border: 2px solid rgb(255, 255, 255);
+      border-radius: 10px;
+      cursor: pointer;
+      transition: background-color 0.3s;
+      text-align: left;
+      letter-spacing: 2px;
+      box-sizing: border-box; 
+    }
+
+    .options button:hover {
+        background-color: rgb(255, 255, 255);
+        color: black;
+        font-weight: bolder;
+        border: 2px solid black;
+    }
+
+    .options button.correct {
+      background-color: #28a74e; 
+  
+    }
+
+    .options button.wrong {
+      background-color: #dc3545; 
+    }
+
+    #feedback {
+      margin-top: 10px;
+      font-weight: bold;
+      color: #dc3545; /* Red */
+    }
+
+    #score-feedback {
+      margin-top: 20px;
+      font-size: 40px;
+      display: flex;
+      text-align: center;
+      color: #fff;
+      letter-spacing: 2px;
+    }
+
+    #timer {
+      font-size:15px;
+      margin-top: 10px;
+      display: flex;
+      justify-content: center; 
+      align-items: center;
+      color: #ff0000;
+    }
+
+    #next-btn {
+      padding: 10px;
+      margin-top: 20px;
+      margin-left: auto;
+      background-color: #4caf50;
+      color: #fff;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 18px;
+      
+    }
+
+    #restart-btn {
+      padding: 10px;
+      font-size: 18px;
+      letter-spacing: 1px;
+      margin-top: 20px;
+      margin-left: auto;
+      margin-right: auto;
+      display: block; 
+      background-color: #4caf50;
+      color: #fff;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+  </style>
+</head>
+<body>
+
+   <section class="firstpage">
+        <video width="640" height="360" controls autoplay muted loop>
+            <source src="introd.mp4" type="video/mp4">
+        </video>
+    
+    
+        <div class="content">
+            <h1>Embark on a Celestial Journey!</h1>
+            <p>Test your knowledge with a 5-item quiz about the wonders of our solar system.</p>
+            <button class="start-btn" onclick="startQuiz()">Start Quiz</button>
+        </div>
+  </section>
+  <div id="quiz-container">
+    <div id="question-container" class="question"></div>
+    <div id="timer"></div>
+    <hr id="hr1">
+    <ul id="options-container" class="options"></ul>
+    <hr id="hr2">
+    <div id="feedback"></div>
+    <button id="next-btn" style="display:none;">Next &nbsp;<i class="fa-solid fa-arrow-right"></i></button>
+    <div id="score-feedback"></div>
+    <button id="restart-btn" style="display:none;"><i class="fas fa-redo"></i> &nbsp;Restart</button>
+  </div>
+
+  <script>
+
+    function startQuiz() {
+        document.querySelector('.firstpage').style.display = 'none';
+        document.getElementById('quiz-container').style.display = 'block';
+        loadQuestion()
+    }
+
+
+    //Contains quiz data (question, choices, and correct answer)
+    const quizData = [
+      {
+        question: "What is the name of the largest moon of Saturn?",
+        options: ["A. Titan", "B. Eris", "C. Callisto", "D. Ganymede"],
+        correctAnswer: "A. Titan",
+      },
+      {
+        question: "Which dwarf planet was formerly considered the 9th planet in our solor system?",
+        options: ["A. Eris", "B. Haumea", "C. Makemake", "D. Pluto"],
+        correctAnswer: "D. Pluto",
+      },
+      {
+        question: "What is the hottest planet in our solar system?",
+        options: ["A. Mercury", "B. Venus", "C. Earth", "D. Mars"],
+        correctAnswer: "B. Venus",
+      },
+      {
+        question: "What is the name of the mission succesfully landed humans on the moon for the first time?",
+        options: ["A. Mercury 7", "B. Gemini 4", "C. Sputnik 1", "D. Apollo 11"],
+        correctAnswer: "D. Apollo 11",
+      },
+      {
+        question: "What is the smallest planet in our solar system?",
+        options: ["A. Venus", "B. Mars", "C. Mercury", "D. Neptune"],
+        correctAnswer: "C. Mercury",
+      },
+
+    ];
+
+    let currentQuestion = 0;
+    let score = 0;
+    let timer;
+
+    const questionContainer = document.getElementById("question-container");
+    const timerContainer = document.getElementById("timer");
+    const optionsContainer = document.getElementById("options-container");
+    const feedbackContainer = document.getElementById("feedback");
+    const scoreFeedbackContainer = document.getElementById("score-feedback");
+    const nextButton = document.getElementById("next-btn");
+    const restartButton = document.getElementById("restart-btn");
+
+    function loadQuestion() {
+      clearInterval(timer);
+      startTimer();
+
+      feedbackContainer.innerText = "";
+      nextButton.style.display = "none";
+
+      const currentQuizData = quizData[currentQuestion];
+      questionContainer.innerText = currentQuizData.question;
+      optionsContainer.innerHTML = "";
+
+      currentQuizData.options.forEach((option) => {
+        const optionButton = document.createElement("button");
+        optionButton.innerText = option;
+        optionButton.addEventListener("click", () => checkAnswer(option));
+        optionsContainer.appendChild(optionButton);
+      });
+    }
+
+    //Check Answer
+    function checkAnswer(selectedOption) {
+      clearInterval(timer);
+      nextButton.style.display = "block";
+
+      const currentQuizData = quizData[currentQuestion];
+      const optionButtons = optionsContainer.getElementsByTagName("button");
+
+
+      //Correct or Incorrect Options
+      for (let i = 0; i < optionButtons.length; i++) {
+        const optionButton = optionButtons[i];
+        if (optionButton.innerText === currentQuizData.correctAnswer) {
+          optionButton.classList.add("correct");
+          optionButton.innerHTML = `<i class="fa-regular fa-circle-check"></i> &nbsp; ${optionButton.innerText}`;
+          feedbackContainer.innerText = "Correct!";
+          feedbackContainer.style.color = "#4caf50";
+          feedbackContainer.style.textAlign = "center";
+          feedbackContainer.style.fontSize = "18px";
+
+        } else if (optionButton.innerText === selectedOption) {
+          optionButton.classList.add("wrong");
+          optionButton.innerHTML = `<i class="fa-regular fa-circle-xmark"></i> &nbsp; ${optionButton.innerText}`;
+          
+        }
+        optionButton.disabled = true; // Disable further clicks
+      }
+
+      if (selectedOption === currentQuizData.correctAnswer) {
+        score++;
+      } else {
+        const correctOption = Array.from(optionButtons).find(
+          (button) => button.innerText === currentQuizData.correctAnswer
+        );
+        feedbackContainer.innerText = `Incorrect, the correct answer is ${currentQuizData.correctAnswer}`;
+        feedbackContainer.style.color = "#dc3545";
+        feedbackContainer.style.textAlign = "center";
+        feedbackContainer.style.fontSize = "18px";
+      }
+    }
+
+    //Timer
+    function startTimer() {
+      let seconds = 10;
+      timerContainer.innerText = `Time remaining: ${seconds}s`;
+
+      timer = setInterval(() => {
+        seconds--;
+        timerContainer.innerText = `Time remaining: ${Math.max(0, seconds)}s`;
+        if (seconds <= 0) {
+          clearInterval(timer);
+          showTimeOutFeedback();
+        }
+      }, 1000);
+    }
+
+    //Show Time's up Feedback
+    function showTimeOutFeedback() {
+      feedbackContainer.innerText = "Sorry, your time ran out!";
+      feedbackContainer.style.color = "#fff"; 
+      feedbackContainer.style.textAlign = "center";
+      feedbackContainer.style.fontSize = "18px";
+      nextButton.style.display = "block";
+      const correctOption = Array.from(optionsContainer.getElementsByTagName("button")).find(
+        (button) => button.innerText === quizData[currentQuestion].correctAnswer
+      );
+      correctOption.classList.add("correct");
+      correctOption.innerHTML = `<i class="fa-regular fa-circle-check"></i> &nbsp; ${correctOption.innerText}`;
+      for (const optionButton of optionsContainer.getElementsByTagName("button")) {
+        optionButton.disabled = true;
+      }
+    }
+
+    //Show results
+    function showResults() {
+      questionContainer.innerText = `Your Score: ${score} out of ${quizData.length}`;
+      optionsContainer.innerHTML = "";
+      nextButton.style.display = "none";
+      restartButton.style.display = "block";
+
+
+      // Give comments to the scores 
+      let scoreFeedback = "";
+      // (score feedback logic)
+      if (score === 0) {
+        scoreFeedback = "Aw, you can try again for a better result.";
+      } else if (score === 1) {
+        scoreFeedback = "Great effort, there's room for improvement on the next try!";
+      } else if (score === 2) {
+        scoreFeedback = "Not bad, with a bit more focus, you'll do even better next time";
+      } else if (score === 3) {
+        scoreFeedback = "Nice work, you're on the right track!";
+      } else if (score === 4 ) {
+        scoreFeedback = "Excellent job, keep it up!";
+      } else if (score === 5) {
+        scoreFeedback = "Outstanding! You nailed it. Keep up the excellent work!";
+      }
+
+    scoreFeedbackContainer.innerText = scoreFeedback;
+    timerContainer.innerText = "";
+    feedbackContainer.innerText = ""; // Clear any remaining feedback
+    }
+    
+    //Restart Quiz
+    function restartQuiz() {
+      currentQuestion = 0;
+      score = 0;
+      feedbackContainer.innerText = "";
+      scoreFeedbackContainer.innerText = "";
+      nextButton.style.display = "block";
+      restartButton.style.display = "none";
+      loadQuestion();
+    }
+
+
+    nextButton.addEventListener("click", () => {
+      currentQuestion++;
+      if (currentQuestion < quizData.length) {
+        loadQuestion();
+      } else {
+        showResults();
+      }
+    });
+
+    restartButton.addEventListener("click", restartQuiz);
+
+    loadQuestion();
+  </script>
+</body>
+</html>
